@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AlbumController;
+use App\Models\Album;
+use App\Models\Photo;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +17,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $albums = Album::all();
+    $photos = Photo::all();
+    return view('welcome', compact('albums', 'photos'));
 });
+
+Route::resource('albums', AlbumController::class);
