@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\Photo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AlbumController extends Controller
 {
@@ -24,7 +26,7 @@ class AlbumController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.create');
     }
 
     /**
@@ -35,7 +37,17 @@ class AlbumController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $store = new Photo;
+        $store->url = $request->file('url')->hashName();
+        $request->file('url')->storePublicly('img/', 'public');
+        $store->save();
+
+        $newEntry = new Album;
+        $newEntry->name = $request->name;
+        $newEntry->author = $request->author;
+        $newEntry->photo_id = $store->id;
+        $newEntry->save();
+        return redirect()->back();
     }
 
     /**
@@ -55,9 +67,11 @@ class AlbumController extends Controller
      * @param  \App\Models\Album  $album
      * @return \Illuminate\Http\Response
      */
-    public function edit(Album $album)
+    public function edit($id)
     {
-        //
+        $imgID = Album::find($id);
+        $edit = Photo::find($imgID->photo_id);
+        return view('pages.edit', compact('edit'));
     }
 
     /**
@@ -67,9 +81,15 @@ class AlbumController extends Controller
      * @param  \App\Models\Album  $album
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Album $album)
+    public function update($id, Request $request)
     {
-        //
+        $imgID = Album::find($id);
+        $edit = Photo::find($imgID->photo_id);
+        Storage::delete('img/'.$edit->url);
+        $request->file('url')->storePublicly('img/', 'public');
+        $edit->url = $request->file('url')->hashName();
+        $edit->save();
+        return redirect()->back();
     }
 
     /**
@@ -78,8 +98,14 @@ class AlbumController extends Controller
      * @param  \App\Models\Album  $album
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Album $album)
+    public function destroy($id)
     {
-        //
+        $destroy = Album::find($id);
+        $imgID = $destroy->photo_id;
+        $destroyImg = Photo::find($imgID);
+        Storage::delete('img/'.$destroyImg->url);
+        $destroyImg->delete();
+        $destroy->delete();
+        return redirect()->back();
     }
 }

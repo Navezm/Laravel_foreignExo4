@@ -1,5 +1,5 @@
 @extends('template.main')
 
 @section('content')
-    @include('partials.form')    
+    @include('partials.formEdit')    
 @endsection
