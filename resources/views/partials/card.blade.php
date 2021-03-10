@@ -1,8 +1,8 @@
-<div class="row">
+<div class="row my-5">
     @foreach ($albums as $item)
         <div class="col-4">
             <div class="card" style="width: 18rem;">
-                <img src="{{asset('img/'.$item->photos->url)}}" class="card-img-top" alt="">
+                <img src="{{asset('img/'.$item->photos->url)}}" height="250px" class="card-img-top" alt="">
                 <div class="card-body">
                 <h5 class="card-title">{{$item->name}}</h5>
                 <p class="card-text">{{$item->author}}</p>

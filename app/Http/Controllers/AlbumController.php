@@ -101,8 +101,7 @@ class AlbumController extends Controller
     public function destroy($id)
     {
         $destroy = Album::find($id);
-        $imgID = $destroy->photo_id;
-        $destroyImg = Photo::find($imgID);
+        $destroyImg = Photo::find($id);
         Storage::disk('public')->delete('img/'.$destroyImg->url);
         $destroy->delete();
         $destroyImg->delete();
