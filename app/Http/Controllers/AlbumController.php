@@ -85,7 +85,7 @@ class AlbumController extends Controller
     {
         $imgID = Album::find($id);
         $edit = Photo::find($imgID->photo_id);
-        Storage::delete('img/'.$edit->url);
+        Storage::disk('public')->delete('img/'.$edit->url);
         $request->file('url')->storePublicly('img/', 'public');
         $edit->url = $request->file('url')->hashName();
         $edit->save();
@@ -103,9 +103,9 @@ class AlbumController extends Controller
         $destroy = Album::find($id);
         $imgID = $destroy->photo_id;
         $destroyImg = Photo::find($imgID);
-        Storage::delete('img/'.$destroyImg->url);
-        $destroyImg->delete();
+        Storage::disk('public')->delete('img/'.$destroyImg->url);
         $destroy->delete();
+        $destroyImg->delete();
         return redirect()->back();
     }
 }
